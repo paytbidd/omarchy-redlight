@@ -1,0 +1,205 @@
+#!/bin/bash
+# Toggle a pure red-light screen shader (red/black only, smooth red ramp).
+# On/off crossfades color -> gray -> red and back. Night light is untouched.
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+PLUGIN_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+
+DAY_TEMP=6500
+FADE_WAIT=0.50
+STATE_DIR="${HOME}/.local/state/omarchy"
+FLAG_FILE="${STATE_DIR}/redlight-enabled"
+LOCK_FILE="${STATE_DIR}/redlight.lock"
+SHADER="${PLUGIN_DIR}/shaders/redlight.frag"
+SHADER_IN="${PLUGIN_DIR}/shaders/redlight-in.frag"
+SHADER_OUT="${PLUGIN_DIR}/shaders/redlight-out.frag"
+
+DT_SAVED=""
+
+current_temp() {
+  local output
+  output=$(hyprctl hyprsunset temperature 2>/dev/null) || return
+  grep -oE '[0-9]+' <<<"$output" | head -n1
+}
+
+shader_path() {
+  hyprctl getoption decoration:screen_shader 2>/dev/null | awk '/^str:/{print $2}'
+}
+
+shader_is_on() {
+  local path
+  path=$(shader_path)
+  [[ $path == *redlight*.frag* ]]
+}
+
+ensure_hyprsunset() {
+  if ! pgrep -x hyprsunset >/dev/null; then
+    setsid uwsm-app -- hyprsunset >/dev/null 2>&1 &
+    sleep 1
+  fi
+}
+
+apply_temperature() {
+  local target=$1
+  local i
+
+  ensure_hyprsunset
+
+  for i in {1..10}; do
+    hyprctl hyprsunset temperature "$target" >/dev/null 2>&1
+    sleep 0.2
+    [[ $(current_temp) == "$target" ]] && break
+  done
+
+  omarchy-shell -q nightlight refresh >/dev/null 2>&1 || true
+}
+
+set_shader() {
+  local path=$1
+  if [[ -z $path ]]; then
+    hyprctl eval "hl.config({ decoration = { screen_shader = '' } })" >/dev/null
+    return
+  fi
+  if [[ ! -f $path ]]; then
+    echo "omarchy-toggle-redlight: missing shader $path" >&2
+    return 1
+  fi
+  hyprctl eval "hl.config({ decoration = { screen_shader = [[$path]] } })" >/dev/null
+}
+
+current_damage_tracking() {
+  hyprctl -j getoption debug:damage_tracking 2>/dev/null | jq -r '.int // 2'
+}
+
+set_damage_tracking() {
+  hyprctl eval "hl.config({ debug = { damage_tracking = $1 } })" >/dev/null
+}
+
+begin_fade() {
+  DT_SAVED=$(current_damage_tracking)
+  trap end_fade EXIT
+  set_damage_tracking 0
+}
+
+end_fade() {
+  trap - EXIT
+  local restore=${DT_SAVED:-2}
+  set_damage_tracking "$restore"
+  DT_SAVED=""
+}
+
+with_lock() {
+  mkdir -p "$STATE_DIR"
+  exec 9>"$LOCK_FILE"
+  flock -w 3 9
+}
+
+is_red() {
+  [[ -f $FLAG_FILE ]] || shader_is_on
+}
+
+status_json() {
+  local temp enabled
+  temp=$(current_temp)
+  if is_red; then
+    enabled=true
+  else
+    enabled=false
+  fi
+  jq -cn --argjson enabled "$enabled" --arg temp "${temp:-}" \
+    '{enabled:$enabled, temperature:(($temp | tonumber?) // null)}'
+}
+
+turn_on() {
+  mkdir -p "$STATE_DIR"
+  if [[ -f $FLAG_FILE ]] && shader_is_on; then
+    set_shader "$SHADER" || true
+    return
+  fi
+  : >"$FLAG_FILE"
+  begin_fade
+  if ! set_shader "$SHADER_IN"; then
+    end_fade
+    rm -f "$FLAG_FILE"
+    echo "omarchy-toggle-redlight: failed to apply fade-in shader" >&2
+    return 1
+  fi
+  sleep "$FADE_WAIT"
+  if ! set_shader "$SHADER"; then
+    end_fade
+    echo "omarchy-toggle-redlight: failed to apply red shader" >&2
+    return 1
+  fi
+  end_fade
+}
+
+turn_off() {
+  if [[ ! -f $FLAG_FILE ]] && ! shader_is_on; then
+    return
+  fi
+  rm -f "$FLAG_FILE"
+  begin_fade
+  if ! set_shader "$SHADER_OUT"; then
+    set_shader ""
+    end_fade
+    return 1
+  fi
+  sleep "$FADE_WAIT"
+  set_shader ""
+  end_fade
+}
+
+reset_day() {
+  rm -f "$FLAG_FILE"
+  set_shader ""
+  if [[ -n $DT_SAVED ]]; then
+    end_fade
+  elif [[ $(current_damage_tracking) == 0 ]]; then
+    set_damage_tracking 2
+  fi
+  ensure_hyprsunset
+  hyprctl hyprsunset identity >/dev/null 2>&1 || true
+  hyprctl hyprsunset gamma 100 >/dev/null 2>&1 || true
+  apply_temperature "$DAY_TEMP"
+}
+
+restore_if_enabled() {
+  [[ -f $FLAG_FILE && -f $SHADER ]] || return 0
+  set_shader "$SHADER" || true
+}
+
+usage() {
+  echo "Usage: omarchy-toggle-redlight [toggle|on|off|reset|restore-if-enabled|--status|--enabled]" >&2
+  exit 1
+}
+
+case "${1:-toggle}" in
+  --status)
+    status_json
+    ;;
+  --enabled)
+    is_red
+    ;;
+  toggle|"")
+    with_lock
+    if is_red; then turn_off; else turn_on; fi
+    ;;
+  on)
+    with_lock
+    turn_on
+    ;;
+  off)
+    with_lock
+    turn_off
+    ;;
+  reset)
+    with_lock
+    reset_day
+    ;;
+  restore-if-enabled)
+    restore_if_enabled
+    ;;
+  *)
+    usage
+    ;;
+esac
