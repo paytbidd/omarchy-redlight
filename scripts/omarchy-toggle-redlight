@@ -2,7 +2,11 @@
 # Toggle a pure red-light screen shader (red/black only, smooth red ramp).
 # On/off crossfades color -> gray -> red and back. Night light is untouched.
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+SOURCE=${BASH_SOURCE[0]}
+while [[ -L $SOURCE ]]; do
+  SOURCE=$(readlink -f -- "$SOURCE")
+done
+SCRIPT_DIR=$(cd "$(dirname "$SOURCE")" && pwd)
 PLUGIN_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 DAY_TEMP=6500

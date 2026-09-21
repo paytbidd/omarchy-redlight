@@ -4,7 +4,7 @@
 
 The filter maps luminance to red and turns green and blue off. On and off crossfade through gray. Night light is left alone.
 
-The bar icon is **RGB** set in [Chicago Kare](https://chicagokare.xyz/) at 13px — a pixel-faithful recreation of Susan Kare’s original Macintosh Chicago. Clicking it on fades G and B out so only R remains. The mark stays on the bar while the shader is on and hides when it is off. Turn it on from the Omarchy menu or the keybind.
+The bar icon is **RGB** set in [Chicago Kare](https://chicagokare.xyz/) at 13px — a pixel-faithful recreation of Susan Kare’s original Macintosh Chicago. It stays on the bar: dimmed RGB when off, then G and B fade so only R remains while red is on. Click it, use the Omarchy menu, or Super+Shift+Ctrl+N.
 
 The font is bundled under `fonts/` (MIT, Duane King).
 
