@@ -1,12 +1,12 @@
 import QtQuick
 
-// Chicago Kare (bitmap Chicago, 12px native) RGB. G and B fade when red is on.
+// Chicago Kare (bitmap Chicago) RGB at 13px. G and B fade when red is on.
 Item {
   id: root
 
   property bool checked: false
   property color color: "white"
-  property int pixelSize: 12
+  property int pixelSize: 13
   property url fontUrl: Qt.resolvedUrl("fonts/ChicagoKare-Regular.ttf")
 
   FontLoader {

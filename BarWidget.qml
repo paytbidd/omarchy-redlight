@@ -90,7 +90,7 @@ BarWidget {
           anchors.centerIn: parent
           checked: true
           color: root.bar ? root.bar.barForeground : button.foreground
-          pixelSize: 12
+          pixelSize: 13
         }
       }
     }
