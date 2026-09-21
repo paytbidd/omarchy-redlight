@@ -1,34 +1,33 @@
 import QtQuick
 
-// Tiny 3×5 pixel "RGB". G and B fade out when red light is on; R stays put.
+// Chicago Kare (bitmap Chicago, 12px native) RGB. G and B fade when red is on.
 Item {
   id: root
 
   property bool checked: false
   property color color: "white"
-  property int px: 2
-  property int letterGap: 1
+  property int pixelSize: 12
+  property url fontUrl: Qt.resolvedUrl("fonts/ChicagoKare-Regular.ttf")
 
-  readonly property var maps: ({
-    "R": ["111", "101", "111", "110", "101"],
-    "G": ["111", "100", "101", "101", "111"],
-    "B": ["110", "101", "110", "101", "110"]
-  })
-  readonly property int letterW: 3 * px
-  readonly property int letterH: 5 * px
-  readonly property int clusterW: letterW * 3 + letterGap * 2
+  FontLoader {
+    id: chicago
+    source: root.fontUrl
+  }
 
-  implicitWidth: clusterW
-  implicitHeight: letterH
+  readonly property string family: chicago.status === FontLoader.Ready ? chicago.name : "Chicago Kare"
+
+  implicitWidth: row.implicitWidth
+  implicitHeight: row.implicitHeight
 
   Row {
-    spacing: root.letterGap
+    id: row
+    spacing: 0
     anchors.centerIn: parent
 
-    PixelLetter { letter: "R" }
+    PixelLetter { text: "R" }
 
     PixelLetter {
-      letter: "G"
+      text: "G"
       opacity: root.checked ? 0 : 1
       Behavior on opacity {
         NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
@@ -36,7 +35,7 @@ Item {
     }
 
     PixelLetter {
-      letter: "B"
+      text: "B"
       opacity: root.checked ? 0 : 1
       Behavior on opacity {
         NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
@@ -44,29 +43,13 @@ Item {
     }
   }
 
-  component PixelLetter: Item {
-    property string letter: "R"
-
-    width: root.letterW
-    height: root.letterH
-
-    Repeater {
-      model: 15
-
-      Rectangle {
-        required property int index
-        readonly property int col: index % 3
-        readonly property int row: Math.floor(index / 3)
-        readonly property var rows: root.maps[letter] || ["000", "000", "000", "000", "000"]
-
-        visible: rows[row].charAt(col) === "1"
-        x: col * root.px
-        y: row * root.px
-        width: root.px
-        height: root.px
-        color: root.color
-        antialiasing: false
-      }
-    }
+  component PixelLetter: Text {
+    textFormat: Text.PlainText
+    color: root.color
+    font.family: root.family
+    font.pixelSize: root.pixelSize
+    font.kerning: false
+    font.hintingPreference: Font.PreferFullHinting
+    renderType: Text.NativeRendering
   }
 }

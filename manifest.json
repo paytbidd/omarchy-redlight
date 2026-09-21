@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "payton.redlight",
   "name": "Red Light",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "author": "Payton Biddington",
-  "description": "Bar toggle for a pure red Hyprland screen shader. Pixel RGB icon fades to R while red is on.",
+  "description": "Bar toggle for a pure red Hyprland screen shader. Chicago RGB icon fades to R while red is on.",
   "homepage": "https://github.com/paytbidd/omarchy-redlight",
   "license": "MIT",
   "kinds": [

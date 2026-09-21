@@ -80,16 +80,17 @@ BarWidget {
     dimmed: false
     active: true
     useActiveColor: false
-    slotSize: Style.bar.statusSlot
-    opticalSize: 20
+    slotSize: 28
+    opticalSize: 24
     fontSize: Style.font.caption
     tooltipText: "Turn Off Red Light"
     iconComponent: Component {
       Item {
         RgbMark {
-          anchors.fill: parent
+          anchors.centerIn: parent
           checked: true
           color: root.bar ? root.bar.barForeground : button.foreground
+          pixelSize: 12
         }
       }
     }

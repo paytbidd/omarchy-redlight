@@ -4,7 +4,9 @@
 
 The filter maps luminance to red and turns green and blue off. On and off crossfade through gray. Night light is left alone.
 
-The bar icon is a tiny pixel-font **RGB**. Clicking it on fades G and B out so only R remains. The mark stays on the bar while the shader is on. When the shader is off, it uses the same hover-hidden inactive state as the other status indicators (night light, do not disturb, stay awake), with the full RGB visible. Turn it on from the Omarchy menu, the keybind, or by hovering the indicators cluster.
+The bar icon is **RGB** set in [Chicago Kare](https://chicagokare.xyz/) at 12px — a pixel-faithful recreation of Susan Kare’s original Macintosh Chicago. Clicking it on fades G and B out so only R remains. The mark stays on the bar while the shader is on. When the shader is off, it uses the same hover-hidden inactive state as the other status indicators (night light, do not disturb, stay awake), with the full RGB visible. Turn it on from the Omarchy menu, the keybind, or by hovering the indicators cluster.
+
+The font is bundled under `fonts/` (MIT, Duane King).
 
 ## Install
 
