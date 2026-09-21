@@ -32,6 +32,14 @@ BarWidget {
       restoreProc.running = true
   }
 
+  IpcHandler {
+    target: "payton.redlight"
+
+    function refresh(): void {
+      root.broadcast("refresh")
+    }
+  }
+
   FileView {
     path: `${Quickshell.env("HOME")}/.local/state/omarchy`
     watchChanges: true
@@ -47,10 +55,19 @@ BarWidget {
 
   Process {
     id: probe
-    command: [root.toggleBin, "--enabled"]
-    onExited: function (code) {
-      root.redOn = (code === 0)
+    command: ["bash", "-c", "[[ -f $HOME/.local/state/omarchy/redlight-enabled ]] && echo yes || echo no"]
+    stdout: SplitParser {
+      onRead: function (line) {
+        root.redOn = String(line).trim() === "yes"
+      }
     }
+  }
+
+  Timer {
+    id: reconcileTimer
+    interval: 250
+    repeat: false
+    onTriggered: root.refresh()
   }
 
   Component.onCompleted: root.restore()
@@ -59,17 +76,27 @@ BarWidget {
     id: button
     anchors.fill: parent
     bar: root.bar
-    text: "󰌤"
+    text: "󰨥"
     dimmed: false
     active: true
     useActiveColor: false
     slotSize: Style.bar.statusSlot
     fontSize: Style.font.caption
     tooltipText: "Turn Off Red Light"
+    iconComponent: Component {
+      Item {
+        ToggleLever {
+          anchors.fill: parent
+          checked: true
+          color: root.bar ? root.bar.barForeground : button.foreground
+        }
+      }
+    }
     onPressed: function () {
+      root.redOn = false
       if (root.bar)
         root.bar.run(Util.shellQuote(root.toggleBin))
-      Qt.callLater(root.refresh)
+      reconcileTimer.restart()
     }
   }
 }
