@@ -1,10 +1,10 @@
 # Omarchy Red Light
 
-Always-visible [Omarchy](https://omarchy.org/) bar toggle for a pure red Hyprland screen shader.
+[Omarchy](https://omarchy.org/) bar toggle for a pure red Hyprland screen shader.
 
 The filter maps luminance to red and turns green and blue off. On and off crossfade through gray. Night light is left alone.
 
-The icon stays on the bar (dimmed when off) so you can click it without hovering the indicators cluster.
+The widget uses a light-switch glyph and only stays on the bar while red light is on. When it is off, the icon hides like the other status indicators (night light, do not disturb, stay awake). Turn it on from the Omarchy menu or the keybind.
 
 ## Install
 

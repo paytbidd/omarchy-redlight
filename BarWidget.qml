@@ -18,8 +18,9 @@ BarWidget {
   }
   readonly property string toggleBin: pluginDir + "scripts/omarchy-toggle-redlight"
 
-  implicitWidth: button.implicitWidth
-  implicitHeight: button.implicitHeight
+  visible: redOn
+  implicitWidth: redOn ? button.implicitWidth : 0
+  implicitHeight: redOn ? button.implicitHeight : 0
 
   function refresh() {
     if (!probe.running)
@@ -58,13 +59,13 @@ BarWidget {
     id: button
     anchors.fill: parent
     bar: root.bar
-    text: ""
-    dimmed: !root.redOn
-    active: root.redOn
+    text: "󰌤"
+    dimmed: false
+    active: true
     useActiveColor: false
     slotSize: Style.bar.statusSlot
     fontSize: Style.font.caption
-    tooltipText: root.redOn ? "Turn Off Red Light" : "Red Light"
+    tooltipText: "Turn Off Red Light"
     onPressed: function () {
       if (root.bar)
         root.bar.run(Util.shellQuote(root.toggleBin))

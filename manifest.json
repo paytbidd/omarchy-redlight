@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "payton.redlight",
   "name": "Red Light",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Payton Biddington",
-  "description": "Always-visible bar toggle for a pure red Hyprland screen shader.",
+  "description": "Bar toggle for a pure red Hyprland screen shader. Shows on the bar only while red light is on.",
   "homepage": "https://github.com/paytbidd/omarchy-redlight",
   "license": "MIT",
   "kinds": [
@@ -15,7 +15,7 @@
   },
   "barWidget": {
     "displayName": "Red Light",
-    "description": "Toggle a red-only screen shader. Stays on the bar next to night light.",
+    "description": "Toggle a red-only screen shader. Appears on the bar only while it is on.",
     "category": "Status",
     "allowMultiple": false,
     "defaultSection": "center"
