@@ -76,16 +76,17 @@ BarWidget {
     id: button
     anchors.fill: parent
     bar: root.bar
-    text: "󰨥"
+    text: "RGB"
     dimmed: false
     active: true
     useActiveColor: false
     slotSize: Style.bar.statusSlot
+    opticalSize: 20
     fontSize: Style.font.caption
     tooltipText: "Turn Off Red Light"
     iconComponent: Component {
       Item {
-        ToggleLever {
+        RgbMark {
           anchors.fill: parent
           checked: true
           color: root.bar ? root.bar.barForeground : button.foreground

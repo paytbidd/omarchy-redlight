@@ -4,7 +4,7 @@
 
 The filter maps luminance to red and turns green and blue off. On and off crossfade through gray. Night light is left alone.
 
-The widget is a vintage ball-lever toggle that throws up when red light is on and down when it is off. It stays on the bar while the shader is on. When the shader is off, the icon uses the same hover-hidden inactive state as the other status indicators (night light, do not disturb, stay awake). Turn it on from the Omarchy menu, the keybind, or by hovering the indicators cluster.
+The bar icon is a tiny pixel-font **RGB**. Clicking it on fades G and B out so only R remains. The mark stays on the bar while the shader is on. When the shader is off, it uses the same hover-hidden inactive state as the other status indicators (night light, do not disturb, stay awake), with the full RGB visible. Turn it on from the Omarchy menu, the keybind, or by hovering the indicators cluster.
 
 ## Install
 
