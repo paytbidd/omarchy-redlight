@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "id": "payton.redlight",
   "name": "Red Light",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "Payton Biddington",
-  "description": "Bar toggle for a pure red Hyprland screen shader. Chicago RGB icon fades to R while red is on.",
+  "description": "Bar toggle for a pure red Hyprland screen shader (green and blue off), for low-blue-light evenings and circadian-friendly late-night screen use.",
   "homepage": "https://github.com/paytbidd/omarchy-redlight",
   "license": "MIT",
   "kinds": [
@@ -15,7 +15,7 @@
   },
   "barWidget": {
     "displayName": "Red Light",
-    "description": "Toggle a red-only screen shader. Appears on the bar only while it is on.",
+    "description": "Toggle a pure red screen shader (green and blue off) for low-blue-light evenings and circadian-friendly late-night screen use.",
     "category": "Status",
     "allowMultiple": false,
     "defaultSection": "center"

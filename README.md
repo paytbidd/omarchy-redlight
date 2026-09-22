@@ -8,6 +8,10 @@ The bar icon is **RGB** set in [Chicago Kare](https://chicagokare.xyz/) at 13px 
 
 The font is bundled under `fonts/` (MIT, Duane King).
 
+## Why red
+
+Pure red maps luminance to red and turns green and blue off. It is useful for low-blue-light evenings and for circadian-minded screen use after dark. It is a display filter, not a substitute for dark time outdoors.
+
 ## Install
 
 ```bash
