@@ -22,6 +22,12 @@ Update later with:
 omarchy plugin update payton.redlight
 ```
 
+## Remove
+
+```bash
+omarchy plugin remove payton.redlight
+```
+
 ## What you get
 
 - Bar widget `payton.redlight` — click to toggle
