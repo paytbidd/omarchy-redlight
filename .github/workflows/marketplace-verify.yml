@@ -1,0 +1,19 @@
+name: Marketplace verify
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - ".github/**"
+      - "LICENSE"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    uses: paytbidd/omarchy-plugins/.github/workflows/marketplace-verify.yml@main
+    secrets:
+      MARKETPLACE_GH_TOKEN: ${{ secrets.MARKETPLACE_GH_TOKEN }}
+
