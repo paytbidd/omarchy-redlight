@@ -83,15 +83,17 @@ BarWidget {
     opticalSize: 24
     fontSize: Style.font.caption
     tooltipText: root.redOn ? "Turn Off Red Light" : "Red Light"
-    iconComponent: Component {
-      Item {
-        RgbMark {
-          anchors.centerIn: parent
-          checked: root.redOn
-          color: root.bar ? root.bar.barForeground : button.foreground
-          pixelSize: 13
-        }
-      }
+    // Omarchy 4.5 scales iconComponent content to its visible ink, which shrinks
+    // RGB below its 13px spec and balloons the lone R when G and B fade. Draw the mark on the
+    // button instead; the empty component keeps the slot.
+    iconComponent: Component { Item {} }
+
+    RgbMark {
+      anchors.centerIn: parent
+      checked: root.redOn
+      color: root.bar ? root.bar.barForeground : button.foreground
+      pixelSize: 13
+      scale: button.pressScale
     }
     onPressed: function () {
       root.redOn = !root.redOn
